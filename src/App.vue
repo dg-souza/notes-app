@@ -1,64 +1,63 @@
 <template>
   <div id="app">
     <h1>Bem vindo ao aplicativo de notas</h1>
-    <button @click="Adc" class='btnAdc'>Adicionar nova nota</button>
-
-    <div class='list-notes'>
-      <Notas />
-    </div>
+    <NewNote @noteAdded='addNote' />
+    <NoteGrid :notes='notes' @noteDeleted='deleteNote' />
   </div>
 </template>
 
 <script>
-import Notas from './components/Notas.vue'
+import NoteGrid from "./components/NoteGrid.vue";
+import NewNote from "./components/NewNote.vue";
 
 export default {
-  name: 'App',
+  name: "App",
   components: {
-    Notas
+    NoteGrid,
+    NewNote,
   },
   data() {
     return {
-
-    }
+      notes: []
+    };
   },
   methods: {
     Adc() {
-      alert('teste')
+      alert("teste");
+    },
+    addNote(note) {
+      const sametext = t => t.text === note.text
+      const reallyNew = this.notes.filter(sametext).length == 0
+
+      if(reallyNew) {
+        this.notes.push({
+          text: note.text
+        })
+      }
+    },
+    deleteNote(i) {
+      this.notes.splice(i, 1)
     }
+  },
+  created() {
+    this.notes = []
   }
-}
+};
 </script>
 
 <style lang="scss">
+body {
+  background: rgb(245, 237, 237);
+}
+
 #app {
-  h1 {
-    font: 300 28px 'Roboto', sans-serif;
-    text-align: start;
-  }
-}
-
-.btnAdc {
-  background: #AD7AC6;
-  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-  border-radius: 4px;
-  border: none;
-  color: #fff;
-  width: 200px;
-  height: 50px;
-  font: 100 18px 'Roboto', sans-serif;
-  cursor: pointer;
-  transition: filter 0.2s;
-
-  &:hover {
-    filter: brightness(0.9);
-  }
-}
-
-.list-notes {
   display: flex;
   justify-content: center;
   align-items: center;
   flex-direction: column;
+
+  h1 {
+    font: 300 28px "Roboto", sans-serif;
+  }
 }
 </style>
