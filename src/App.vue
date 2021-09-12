@@ -1,8 +1,8 @@
 <template>
   <div id="app">
     <h1>Bem vindo ao aplicativo de notas</h1>
-    <NewNote @noteAdded='addNote' />
-    <NoteGrid :notes='notes' @noteDeleted='deleteNote' />
+    <NewNote @noteAdded="addNote" />
+    <NoteGrid :notes="notes" @noteDeleted="deleteNote" />
   </div>
 </template>
 
@@ -18,30 +18,46 @@ export default {
   },
   data() {
     return {
-      notes: []
+      notes: [],
     };
   },
-  methods: {
-    Adc() {
-      alert("teste");
+  watch: {
+    notes: {
+      deep: true,
+      handler() {
+        localStorage.setItem("notes", JSON.stringify(this.notes));
+      },
     },
+  },
+  methods: {
     addNote(note) {
-      const sametext = t => t.text === note.text
-      const reallyNew = this.notes.filter(sametext).length == 0
+      const sametext = (t) => t.text === note.text;
+      const reallyNew = this.notes.filter(sametext).length == 0;
 
-      if(reallyNew) {
+      if (reallyNew) {
         this.notes.push({
-          text: note.text
-        })
-      }
+          text: note.text,
+        });
+        this.Mensagem("Nova nota adicionada :)");
+      } else this.Mensagem("Que tal digitar algo diferente para a nova nota?");
     },
     deleteNote(i) {
-      this.notes.splice(i, 1)
-    }
+      this.notes.splice(i, 1);
+      this.Mensagem("Nota deletada com sucesso.");
+    },
+    Mensagem(texto) {
+      this.$toasted.show(texto, {
+        theme: "bubble",
+        position: "bottom-center",
+        duration: 2000,
+      });
+    },
   },
   created() {
-    this.notes = []
-  }
+    const json = localStorage.getItem("notes");
+    const array = JSON.parse(json);
+    this.notes = Array.isArray(array) ? array : [];
+  },
 };
 </script>
 
